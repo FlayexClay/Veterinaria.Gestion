@@ -1,0 +1,59 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Cliente
+
+<EditForm Model="Request" OnValidSubmit="OnGuardar">
+	<DataAnnotationsValidator />
+	<div class="row ">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Nombre: </label>
+			<input type="text" class="form-control" @bind="Request.Nombre"/>
+			<ValidationMessage For="() => Request.Nombre" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Apellido: </label>
+			<input type="text" class="form-control" @bind="Request.Apellido" />
+			<ValidationMessage For="() => Request.Apellido" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Telefono: </label>
+			<input type="text" class="form-control" @bind="Request.Telefono" />
+			<ValidationMessage For="() => Request.Telefono" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Correo: </label>
+			<input type="text" class="form-control" @bind="Request.Email" />
+			<ValidationMessage For="() => Request.Email" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Dirccion: </label>
+			<input type="text" class="form-control" @bind="Request.Direccion" />
+			<ValidationMessage For="() => Request.Direccion" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>D.N.I: </label>
+			<input type="text" class="form-control" @bind="Request.DocumentoIdentidad" />
+			<ValidationMessage For="() => Request.DocumentoIdentidad" />
+		</div>
+	</div>
+
+	<div class="row mt-4 gx-4">
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Guardar</button>
+			<a href="@Rutas.ListaClientes" class="btn btn-danger">Cancelar</a>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	[Parameter]
+	public EventCallback OnGuardarEvent { get; set; } = new();
+
+	[Parameter]
+	public ClienteRequest Request { get; set; } = new();
+
+
+	public async Task OnGuardar() 
+	{
+		await OnGuardarEvent.InvokeAsync();
+	}
+
+}

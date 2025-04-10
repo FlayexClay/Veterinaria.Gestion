@@ -1,0 +1,84 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Cliente
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Clientes.Componentes
+@attribute [Route(Rutas.EditarClientesNav)]
+@inject IClienteServicio ClienteService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+
+<h3>Edicion de Cliente</h3>
+<GroupBox Titulo="Datos del Cliente">
+	<Contenido>
+		<FormCliente Request="Request" OnGuardarEvent="OnModificar" />
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	[Parameter]
+	public int id { get; set; }
+
+	public ClienteRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ObtenerPorId();
+	}
+
+	public async Task ObtenerPorId() { 
+		IsLoading = true;
+		try
+		{
+			var resultado = await ClienteService.ObtenerPorId(id);
+			if (resultado != null && resultado.Data!=null)
+			{
+				var data = resultado.Data;
+				Request = new()
+				{
+						Nombre = data.Nombre,
+						Apellido = data.Apellido,
+						Email = data.Email,
+						Telefono = data.Telefono,
+						Direccion = data.Direccion,
+						DocumentoIdentidad = data.DocumentoIdentidad,
+				};
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+
+	public async Task OnModificar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await ClienteService.Actualizar(id, Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Cliente Editado correctamente");
+				Navegador.NavigateTo(Rutas.ListaClientes);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

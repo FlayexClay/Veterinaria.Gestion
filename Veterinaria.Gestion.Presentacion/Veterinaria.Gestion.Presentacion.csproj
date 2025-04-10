@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazor.Bootstrap" Version="3.3.1" />
+    <PackageReference Include="Blazored.Toast" Version="4.2.1" />
+    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Veterinaria.Gestion.AccesoDatos\Veterinaria.Gestion.AccesoDatos.csproj" />
+    <ProjectReference Include="..\Veterinaria.Gestion.Dto\Veterinaria.Gestion.Dto.csproj" />
+    <ProjectReference Include="..\Veterinaria.Gestion.Repositorios\Veterinaria.Gestion.Repositorios.csproj" />
+    <ProjectReference Include="..\Veterinaria.Gestion.Servicio\Veterinaria.Gestion.Servicio.csproj" />
+  </ItemGroup>
+
+</Project>

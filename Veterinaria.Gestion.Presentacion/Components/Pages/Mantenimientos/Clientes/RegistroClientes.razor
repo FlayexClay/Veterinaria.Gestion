@@ -1,0 +1,43 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Cliente
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Clientes.Componentes
+@attribute [Route(Rutas.RegistroClientes)]
+@inject IClienteServicio ClienteService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+
+<h3>Registro de Cliente</h3>
+<GroupBox Titulo="Datos del Cliente">
+	<Contenido>
+		<FormCliente  Request="Request" OnGuardarEvent="OnGuardar"/>
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	public ClienteRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; } 
+
+	public async Task OnGuardar()
+	{ 
+		IsLoading = true;
+		try
+		{
+			var resultado = await ClienteService.RegistrarCliente(Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Cliente registrado correctamente");
+				Navegador.NavigateTo(Rutas.ListaClientes);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

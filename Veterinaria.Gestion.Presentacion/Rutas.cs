@@ -2,6 +2,9 @@
 {
     public static class Rutas
     {
+
+        public const string Login = "/Login";
+
         public const string ListaClientes = "/Clientes";
         public const string RegistroClientes = "/Clientes/registro";
         public const string EditarClientesNav = "/Clientes/editar/{id:int}";
@@ -13,3 +16,4 @@
         public const string EditarMascotas = "/Mascotas/editar";
     }
 }
+ 

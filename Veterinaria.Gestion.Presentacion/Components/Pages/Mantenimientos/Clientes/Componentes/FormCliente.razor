@@ -24,7 +24,7 @@
 			<ValidationMessage For="() => Request.Email" />
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-12">
-			<label>Dirccion: </label>
+			<label>Direccion: </label>
 			<input type="text" class="form-control" @bind="Request.Direccion" />
 			<ValidationMessage For="() => Request.Direccion" />
 		</div>
@@ -34,7 +34,24 @@
 			<ValidationMessage For="() => Request.DocumentoIdentidad" />
 		</div>
 	</div>
-
+	<hr />
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Usuario: </label>
+			<input type="text" class="form-control" @bind="Request.Usuario" />
+			<ValidationMessage For="() => Request.Usuario" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Clave: </label>
+			<input type="text" class="form-control" @bind="Request.Clave" />
+			<ValidationMessage For="() => Request.Clave" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Confirmar Clave: </label>
+			<input type="text" class="form-control" @bind="Request.ConfirmarClave" />
+			<ValidationMessage For="() => Request.ConfirmarClave" />
+		</div>
+	</div>
 	<div class="row mt-4 gx-4">
 		<div class="col">
 			<button type="submit" class="btn btn-primary">Guardar</button>

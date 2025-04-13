@@ -9,6 +9,10 @@ namespace Veterinaria.Gestion.Repositorios.Interfaces
 {
     public interface IClienteRepositorio : IRepositorioBase<Cliente>
     {
+        Task<List<Cliente>> ListarDetalleByCliente(int id);
 
+        Task Registrar(Cliente cliente, string usuario, string clave);
     }
+
+
 }

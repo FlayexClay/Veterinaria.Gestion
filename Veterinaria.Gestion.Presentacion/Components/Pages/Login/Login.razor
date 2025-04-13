@@ -1,0 +1,84 @@
+﻿@using Blazored.Toast.Configuration
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Veterinaria.Gestion.AccesoDatos.Seguridad
+@using Veterinaria.Gestion.Dto.Request.Login
+@using Veterinaria.Gestion.Dto.Response.Login
+@using Veterinaria.Gestion.Presentacion.Servicios
+@attribute [Route(Rutas.Login)]
+@inject UserManager<SeguridadEntity> UserManager;
+@inject IToastService ToastService;
+@inject AutenticacionService AuthService;
+@inject NavigationManager Navegador;
+<BlazoredToasts Position="ToastPosition.BottomRight" />
+<div class="container"> 
+	<div class="row justify-content-center">
+		<div class="col-5">
+			<div class="card shadow-lg mt-5">
+				<div class="card-header">
+					<h3>Iniciar Sesión</h3>
+				</div>
+				<div class="card-body">
+					<EditForm Model="Request" OnValidSubmit="OnIniciarSesion">
+						<DataAnnotationsValidator />
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" placeholder="Ingrese usuario"  @bind="Request.Usuario"/>
+						<label>Usuario: </label>
+						<ValidationMessage For="() => Request.Usuario" />
+					</div>
+					<div class="form-floating mb-3">
+						<input type="password" class="form-control" placeholder="Ingrese contraseña" @bind="Request.Clave" />
+						<label>Contraseña: </label>
+							<ValidationMessage For="() => Request.Clave" />
+					</div>
+					<div class="d-grid gap-1 mt-4 mb-1">
+						<button class="btn btn-primary" type="submit">Ingresar</button>
+					</div>
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	public LoginRequest Request { get; set; } = new();
+
+	public async Task OnIniciarSesion()
+	{ 
+		try
+		{
+			var usuario = await UserManager.FindByNameAsync(Request.Usuario);
+			if (usuario == null)
+			{
+				ToastService.ShowWarning("El usuario no existe");
+				return;
+			}
+
+			var clave = await UserManager.CheckPasswordAsync(usuario, Request.Clave);
+			if (!clave)
+			{
+				ToastService.ShowWarning("La contraseña es incorrecta");
+				return;
+			}
+			else {
+				var rol = await UserManager.GetRolesAsync(usuario);
+
+				var response = new LoginResponse()
+				{
+						Id = usuario.IdUsuario,
+						Email = usuario.Email!,
+						NombreCompleto = usuario.NombreCompleto,
+						Rol = rol.FirstOrDefault()!,
+				};
+				await AuthService.Login(response);
+				Navegador.NavigateTo("/");
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+	}
+}

@@ -4,7 +4,7 @@
 @inject IClienteServicio ClienteService;
 @inject NavigationManager Navegador;
 @inject IToastService ToastService;
-
+@attribute [Authorize]
 <h3>Edicion de Cliente</h3>
 <GroupBox Titulo="Datos del Cliente">
 	<Contenido>

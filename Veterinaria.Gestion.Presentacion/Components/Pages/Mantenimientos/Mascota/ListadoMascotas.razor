@@ -1,7 +1,177 @@
-﻿@attribute [Route(Rutas.ListaMascotas)]
+﻿@using Veterinaria.Gestion.Dto.Request
+@using Veterinaria.Gestion.Dto.Request.Mascota
+@using Veterinaria.Gestion.Dto.Response.Mascota
+@attribute [Route(Rutas.ListaMascotas)]
+@inject IMascotaServicio ServiceMascota;
+@inject NavigationManager Navegador;
+@inject SweetAlertService Swal;
+@inject IToastService ToastService;
 
-<h3>Listado Productos</h3>
+@attribute [Authorize]
+<h3>Listado de Mascota</h3>
 
+<GroupBox Titulo="Buscar Mascota">
+	<Contenido>
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-12">
+				<label>Nombre:</label>
+				<input class="form-control form-control-sm" @bind="Request.Nombre" />
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 mt-3">
+				<div class="btn btn-group btn-group-sm">
+					<button class="btn btn-outline-info" @onclick="Listar"><i class="bi bi-search"></i></button>
+					<button class="btn btn-outline-info" @onclick="OnLimpiar"><i class="bi bi-arrow-repeat"></i></button>
+					<button class="btn btn-outline-success" @onclick="OnAgregar">Agregar</button>
+				</div>
+			</div>
+		</div>
+	</Contenido>
+</GroupBox>
+
+<div class="row">
+	<div class="col-12">
+		<div class="table table-responsive mt-4">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Especie</th>
+						<th>Raza</th>
+						<th>Peso</th>
+						<th>Alergias</th>
+						<th>Fecha Nacimiento</th>
+						<th>Dueño</th>
+						<th class="text-center"><i class="bi bi-gear"></i></th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in ListaMascota)
+					{
+						<tr>
+							<td>@item.Nombre</td>
+							<td>@item.Especie</td>
+							<td>@item.Raza</td>
+							<td>@item.Peso</td>
+							<td>@item.Alergias</td>
+							<td>@(item.FechaNacimiento?.ToString("dd/MM/yyyy") ?? "")</td>
+							<td>@item.Dueño</td>
+							<td class="text-center">
+								<button Class="btn btn-warning btn-sm" @onclick="() =>  OnEditar(item.Id)"><i class="bi bi-pencil"></i></button>
+								<button Class="btn btn-danger btn-sm" @onclick="() => OnEliminar(item)"><i class="bi bi-trash"></i></button>
+							</td>
+						</tr>
+					}
+				</tbody>
+
+			</table>
+		</div>
+	</div>
+	<div class="col-12">
+		<Paginacion Result="PaginadorRequest" OnPageChanged="OnPaginar" OnPageSizeChanged="OnPaginar" />
+	</div>
+</div>
+
+
+<Loader IsLoading="IsLoading" />
 @code {
 
+	public ICollection<ListaMascotaResponse> ListaMascota { get; set; } = new List<ListaMascotaResponse>();
+
+	public BusquedaMascotaRequest Request { get; set; } = new();
+
+	public PaginadorRequest PaginadorRequest { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Listar();
+	}
+
+	public async Task Listar()
+	{
+		IsLoading = true;
+		try
+		{
+			var respuesta = await ServiceMascota.Listar(Request);
+			if (respuesta != null && respuesta.Data != null)
+			{
+				ListaMascota = respuesta.Data!;
+				PaginadorRequest = new()
+					{
+						FilasPorPagina = Request.Filas,
+						PaginaActual = Request.Pagina,
+						TotalPaginas = respuesta.TotalPaginas,
+						TotalRegistros = respuesta.TotalFilas
+					};
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+
+	public void OnAgregar()
+	{
+		Navegador.NavigateTo(Rutas.RegistroMascotas);
+	}
+
+	public async Task OnLimpiar()
+	{
+		Request = new();
+		await Listar();
+	}
+
+	public void OnEditar(int id)
+	{
+		Navegador.NavigateTo($"{Rutas.EditarMascotas}/{id}");
+	}
+
+	public async Task OnPaginar()
+	{
+		Request.Pagina = PaginadorRequest.PaginaActual;
+		Request.Filas = PaginadorRequest.FilasPorPagina;
+		await Listar();
+	}
+
+	public async Task OnEliminar(ListaMascotaResponse item)
+	{
+
+		try
+		{
+			var respuesta = await Swal.FireAsync(new SweetAlertOptions
+				{
+					Title = "Eliminar Mascota",
+					Text = $"¿Esta seguro de eliminar el Mascota {item.Nombre} ?",
+					Icon = SweetAlertIcon.Question,
+					ShowCancelButton = true,
+					CancelButtonText = "No",
+					ConfirmButtonText = "Si"
+				});
+			if (respuesta.IsConfirmed)
+			{
+				var resultado = await ServiceMascota.Eliminar(item.Id);
+				if (resultado != null)
+					await Listar();
+				ToastService.ShowSuccess("Mascota eliminado correctamente");
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
 }

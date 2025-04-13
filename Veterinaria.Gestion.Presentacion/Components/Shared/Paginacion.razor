@@ -134,7 +134,7 @@ else
 
     private async Task OnPreviousGroupClicked()
     {
-        if (Result.PaginaActual > MaxPageButtons)
+        if (Result!.PaginaActual > MaxPageButtons)
         {
             Result.PaginaActual = StartPageIndex - 1;
         }
@@ -147,7 +147,7 @@ else
 
     private async Task OnNextGroupClicked()
     {
-        if (EndPageIndex < Result.TotalPaginas)
+        if (EndPageIndex < Result!.TotalPaginas)
         {
             Result.PaginaActual = EndPageIndex + 1;
         }

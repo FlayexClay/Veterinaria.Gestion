@@ -18,6 +18,6 @@ namespace Veterinaria.Gestion.Servicio.Interfaces
         Task<ResponseBase> Eliminar(int id);
         Task<PaginacionResponse<ListaClienteResponse>> Listar(BusquedaClienteRequest request);
 
-
+        Task<ResponseBase<List<ClienteResponse>>> ListarDetalleByCliente(int id);
     }
 }

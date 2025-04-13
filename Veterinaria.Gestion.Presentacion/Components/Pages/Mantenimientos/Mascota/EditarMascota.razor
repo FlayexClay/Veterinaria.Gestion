@@ -1,0 +1,105 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Mascota
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Mascota.Componentes
+@attribute [Route(Rutas.EditarMascotasNav)]
+@inject IMascotaServicio MascotaService;
+@inject IClienteServicio ClienteService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+@attribute [Authorize]
+<h3>Edicion de Mascota</h3>
+<GroupBox Titulo="Datos del Mascota">
+	<Contenido>
+		<FormMascota Request="Request" OnGuardarEvent="OnModificar" ListaClientes="ListaClientes"/>
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	[Parameter]
+	public int id { get; set; }
+
+	public MascotaRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	public List<ClienteResponse> ListaClientes { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ObtenerPorId();
+		await OnListarClientes();
+	}
+
+	public async Task OnListarClientes()
+	{
+		try
+		{
+			var resultado = await ClienteService.ListarDetalleByCliente(0);
+			if (resultado.Success)
+			{
+				ListaClientes = resultado.Data;
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+
+		}
+	}
+
+	public async Task ObtenerPorId() { 
+		IsLoading = true;
+		try
+		{
+			var resultado = await MascotaService.ObtenerPorId(id);
+			if (resultado != null && resultado.Data!=null)
+			{
+				var data = resultado.Data;
+				Request = new()
+				{
+						Nombre = data.Nombre,
+						Especie = data.Especie,
+						Raza = data.Raza,
+						Alergias = data.Alergias,
+						Peso = data.Peso,
+						FechaNacimiento = data.FechaNacimiento,
+						IdCliente = data.IdCliente
+				};
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+
+	public async Task OnModificar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await MascotaService.Actualizar(id, Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Mascota Editado correctamente");
+				Navegador.NavigateTo(Rutas.ListaMascotas);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

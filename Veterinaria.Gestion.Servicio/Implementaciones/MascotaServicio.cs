@@ -139,6 +139,7 @@ namespace Veterinaria.Gestion.Servicio.Implementaciones
                         Nombre = p.Nombre,
                         Especie = p.Especie,
                         Raza = p.Raza,
+                        Alergias = p.Alergias,
                         Dueño = p.IdClienteNavigation.Nombre,
                         FechaNacimiento = p.FechaNacimiento,
                         Peso = p.Peso

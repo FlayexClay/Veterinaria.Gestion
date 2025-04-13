@@ -35,7 +35,7 @@ namespace Veterinaria.Gestion.Servicio.Implementaciones
 
                 var nuevo = _mapper.Map<Cliente>(request);
 
-                await _repositorio.AddAsync(nuevo);
+                await _repositorio.Registrar(nuevo, request.Usuario, request.Clave);
                 respuesta.Message = "Cliente registrado correctamente";
                 respuesta.Success = true;
             }
@@ -162,6 +162,34 @@ namespace Veterinaria.Gestion.Servicio.Implementaciones
         }
 
 
+        public async Task<ResponseBase<List<ClienteResponse>>> ListarDetalleByCliente(int id)
+        { 
+        var respuesta = new ResponseBase<List<ClienteResponse>>();
+
+            try
+            {
+                var resultado = await _repositorio.ListarDetalleByCliente(id);
+
+                if (resultado == null || !resultado.Any())
+                {
+                    respuesta.Message = "No se encontraron clientes";
+                    respuesta.Success = false;
+                    return respuesta;
+                }
+
+                // Mapear usando AutoMapper
+                respuesta.Data = _mapper.Map<List<ClienteResponse>>(resultado);
+                respuesta.Success = true;
+                respuesta.Message = "Clientes obtenidos correctamente";
+            }
+            catch (Exception ex)
+            {
+                respuesta.Success = false;
+                respuesta.Message = "Error al obtener los clientes: " + ex.Message;
+            }
+
+            return respuesta;
+        }
 
     }
 }

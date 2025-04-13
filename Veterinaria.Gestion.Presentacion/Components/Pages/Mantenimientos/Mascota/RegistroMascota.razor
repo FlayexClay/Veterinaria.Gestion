@@ -1,0 +1,71 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Mascota
+@using Veterinaria.Gestion.Dto.Response.Cliente
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Mascota.Componentes
+@attribute [Route(Rutas.RegistroMascotas)]
+@inject IMascotaServicio MascotaService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+@inject IClienteServicio ClienteService;
+
+@attribute [Authorize]
+<h3>Registro de Mascota</h3>
+<GroupBox Titulo="Datos del Mascota">
+	<Contenido>
+		<FormMascota  Request="Request" OnGuardarEvent="OnGuardar" ListaClientes="ListaClientes"/>
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	public MascotaRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	public List<ClienteResponse> ListaClientes { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await OnListarClientes();
+	}
+
+
+	public async Task OnListarClientes() 
+	{
+		try
+		{
+			var resultado = await ClienteService.ListarDetalleByCliente(0);
+			if (resultado.Success)
+			{
+				ListaClientes = resultado.Data;
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+			
+		}
+	}
+
+	public async Task OnGuardar()
+	{ 
+		IsLoading = true;
+		try
+		{
+			var resultado = await MascotaService.RegistrarMascota(Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Mascota registrado correctamente");
+				Navegador.NavigateTo(Rutas.ListaMascotas);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

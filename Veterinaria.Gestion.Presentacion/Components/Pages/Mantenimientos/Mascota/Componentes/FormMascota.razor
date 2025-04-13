@@ -1,0 +1,75 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Mascota
+@using Veterinaria.Gestion.Dto.Response.Mascota
+@inject IClienteServicio ClienteService;
+
+<EditForm Model="Request" OnValidSubmit="OnGuardar">
+	<DataAnnotationsValidator />
+	<div class="row ">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Nombre: </label>
+			<input type="text" class="form-control" @bind="Request.Nombre"/>
+			<ValidationMessage For="() => Request.Nombre" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Especie: </label>
+			<input type="text" class="form-control" @bind="Request.Especie" />
+			<ValidationMessage For="() => Request.Especie" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Raza: </label>
+			<input type="text" class="form-control" @bind="Request.Raza" />
+			<ValidationMessage For="() => Request.Raza" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Alergias: </label>
+			<input type="text" class="form-control" @bind="Request.Alergias" />
+			<ValidationMessage For="() => Request.Alergias" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Peso: </label>
+			<InputNumber type="text" class="form-control" @bind-Value="Request.Peso" />
+			<ValidationMessage For="() => Request.Peso" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Fecha Nacimiento: </label>
+			<InputDate TValue="DateOnly?" class="form-control" @bind-Value="Request.FechaNacimiento" />
+			<ValidationMessage For="() => Request.FechaNacimiento" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Dueño: </label>
+			<select type="text" class="form-control" @bind="Request.IdCliente" >
+				<option value="0">-Seleccione Cliente-</option>
+				@foreach (var item in ListaClientes)
+				{
+					<option value="@item.Id">@item.DocumentoIdentidad</option>
+				}
+			</select>
+			<ValidationMessage For="() => Request.IdCliente" />
+		</div>
+	</div>
+
+	<div class="row mt-4 gx-4">
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Guardar</button>
+			<a href="@Rutas.ListaMascotas" class="btn btn-danger">Cancelar</a>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	[Parameter]
+	public EventCallback OnGuardarEvent { get; set; } = new();
+
+	[Parameter]
+	public MascotaRequest Request { get; set; } = new();
+
+	[Parameter]
+	public List<ClienteResponse> ListaClientes { get; set; } = new();
+
+
+	public async Task OnGuardar() 
+	{
+		await OnGuardarEvent.InvokeAsync();
+	}
+
+}

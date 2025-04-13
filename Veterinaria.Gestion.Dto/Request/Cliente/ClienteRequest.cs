@@ -30,5 +30,13 @@ namespace Veterinaria.Gestion.Dto.Request.Cliente
         [Required(ErrorMessage = Constantes.RequiredMessage)]
         [Display(Name = "D.N.I")]
         public string DocumentoIdentidad { get; set; } = null!;
+        [Required(ErrorMessage = Constantes.RequiredMessage)]
+        public string Usuario { get; set; } = default!;
+        [Required(ErrorMessage = Constantes.RequiredMessage)]
+        public string Clave { get; set; } = default!;
+        [Required(ErrorMessage = Constantes.RequiredMessage)]
+        [Compare(nameof(Clave), ErrorMessage ="Las contraseñas no coinciden")]
+        [Display(Name ="Confirmar Clave")]
+        public string ConfirmarClave { get; set; } = default!;
     }
 }

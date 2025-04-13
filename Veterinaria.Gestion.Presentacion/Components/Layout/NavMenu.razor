@@ -1,29 +1,73 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Veterinaria.Gestion.Presentacion</a>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+﻿<aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="icon.png" alt="logo" />
+        <h2>Veterinaria Chato</h2>
     </div>
-</div>
+    <ul class="sidebar-links">
 
-<input type="checkbox" title="Menú de navegación" class="navbar-toggler" />
+        <AuthorizeView Roles="Administrador">
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="material-symbols-outlined">home</span> Inicio
-            </NavLink>
-        </div>
+        
+        <li>
+            <a href="/pedidos/lista">
+                <span class="material-symbols-outlined"> view_comfy_alt </span>Pedidos
+            </a>
+        </li>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Rutas.ListaClientes">
-                <span class="material-symbols-outlined">group</span> Clientes
-            </NavLink>
-        </div>
+        <li>
+            <a href="/pedidos/nuevo">
+                <span class="material-symbols-outlined"> add_shopping_cart </span>Realizar Pedido
+            </a>
+        </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Cliente">
+            <li>
+                <a href="/pedidos/cliente">
+                    <span class="material-symbols-outlined"> view_comfy_alt </span>Mis pedidos
+                </a>
+            </li>
+        </AuthorizeView>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@Rutas.ListaMascotas">
-                <span class="material-symbols-outlined">pets </span> Mascotas
-            </NavLink>
-        </div>
-    </nav>
-</div>
+      <AuthorizeView Roles="Administrador">
+        <li class="has-submenu">
+            <input type="checkbox" id="projects-toggle" class="submenu-toggle">
+            <label for="projects-toggle">
+                <span class="material-symbols-outlined"> folder </span>Mantenimientos
+            </label>
+            <ul class="submenu">
+                <li><a href="@Rutas.ListaClientes"><span class="material-symbols-outlined">group</span>Clientes</a></li>
+                <li><a href="@Rutas.ListaMascotas"><span class="material-symbols-outlined">pets </span>Mascotas</a></li>
+                <li><a href="proveedores">Proveedores</a></li>
+                <li><a href="#">Catalogos</a></li>
+            </ul>
+        </li>
+        <li class="has-submenu">
+            <input type="checkbox" id="reports-toggle" class="submenu-toggle">
+            <label for="reports-toggle">
+                <span class="material-symbols-outlined"> folder </span>Reportes
+            </label>
+            <ul class="submenu">
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Clientes</a></li>
+                <li><a href="#">Pedidos</a></li>
+            </ul>
+        </li>
+        </AuthorizeView>
+    </ul>
+    <div class="user-account">
+        <AuthorizeView>
+            <Authorized>
+                <div class="user-profile">
+                    <img src="user.png" alt="Profile Image" />
+                    <div class="user-detail">
+                        <h3>@context.User.Identity!.Name</h3>
+                        <span>@context.User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.Role)!.Value</span>
+                    </div>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+   
+    </div>
+</aside>

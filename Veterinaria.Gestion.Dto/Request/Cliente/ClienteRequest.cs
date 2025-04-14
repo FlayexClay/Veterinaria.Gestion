@@ -13,7 +13,6 @@ namespace Veterinaria.Gestion.Dto.Request.Cliente
         [Required(ErrorMessage = Constantes.RequiredMessage)]
         public string Nombre { get; set; } = null!;
 
-        
         [Required(ErrorMessage = Constantes.RequiredMessage)]
         [Display(Name = "Apellidos")]
         public string Apellido { get; set; } = null!;

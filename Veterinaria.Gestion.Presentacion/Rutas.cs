@@ -14,6 +14,12 @@
         public const string RegistroMascotas = "/Mascotas/registro";
         public const string EditarMascotasNav = "/Mascotas/editar/{id:int}";
         public const string EditarMascotas = "/Mascotas/editar";
+
+        public const string ListaEspecialidad = "/Especialidad";
+        public const string RegistroEspecialidad = "/Especialidad/registro";
+        public const string EditarEspecialidadNav = "/Especialidad/editar/{id:int}";
+        public const string EditarEspecialidad = "/Especialidad/editar";
+
     }
 }
  

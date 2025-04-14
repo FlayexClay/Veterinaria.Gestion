@@ -1,0 +1,44 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Especialidad
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Especialidad.Componente
+@attribute [Route(Rutas.RegistroEspecialidad)]
+@inject IEspecialidadServicio EspecialidadService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+@attribute [Authorize]
+<h3>Registro de Especialidad</h3>
+<GroupBox Titulo="Datos del Especialidad">
+	<Contenido>
+		<FormEspecialidad Request="Request" OnGuardarEvent="OnGuardar" />
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	public EspecialidadRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	public async Task OnGuardar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await EspecialidadService.RegistrarEspecialidad(Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Especialidad registrado correctamente");
+				Navegador.NavigateTo(Rutas.ListaEspecialidad);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

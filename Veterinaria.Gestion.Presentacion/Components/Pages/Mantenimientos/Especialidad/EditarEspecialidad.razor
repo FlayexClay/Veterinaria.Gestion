@@ -1,0 +1,81 @@
+﻿﻿@using Veterinaria.Gestion.Dto.Request.Especialidad
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Especialidad.Componente
+@attribute [Route(Rutas.EditarEspecialidadNav)]
+@inject IEspecialidadServicio EspecialidadService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+
+<h3>Edicion de Especialidad</h3>
+<GroupBox Titulo="Datos del Especialidad">
+	<Contenido>
+		<FormEspecialidad Request="Request" OnGuardarEvent="OnModificar" />
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	[Parameter]
+	public int id { get; set; }
+
+	public EspecialidadRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ObtenerPorId();
+	}
+
+	public async Task ObtenerPorId()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await EspecialidadService.ObtenerPorId(id);
+			if (resultado != null && resultado.Data != null)
+			{
+				var data = resultado.Data;
+				Request = new()
+					{
+						Nombre = data.Nombre,
+						Descripcion = data.Descripcion,
+					};
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+
+	public async Task OnModificar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await EspecialidadService.Actualizar(id, Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Especialidad Editado correctamente");
+				Navegador.NavigateTo(Rutas.ListaEspecialidad);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

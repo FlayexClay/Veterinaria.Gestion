@@ -1,0 +1,73 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Veterinario
+@using Veterinaria.Gestion.Dto.Response.Especialidad
+@using Veterinaria.Gestion.Dto.Response.Veterinario
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Veterinario.Componentes
+@attribute [Route(Rutas.RegistroVeterinario)]
+@inject IVeterinarioServicio VeterinarioService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+@inject IEspecialidadServicio EspecialidadService;
+@attribute [Authorize]
+
+<h3>Registro de Veterinario</h3>
+<GroupBox Titulo="Datos del Veterinario">
+	<Contenido>
+		<FormVeterinario Request="Request" OnGuardarEvent="OnGuardar" ListaEspecialidad="ListaEspecialidad" />
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+	public VeterinarioRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	public List<EspecialidadResponse> ListaEspecialidad { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await OnListarEspecialidades();
+	}
+
+
+	public async Task OnListarEspecialidades()
+	{
+		try
+		{
+			var resultado = await EspecialidadService.ListarDetalleByEspecialidad(0);
+			if (resultado.Success)
+			{
+				ListaEspecialidad = resultado.Data!;
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+
+		}
+	}
+
+	public async Task OnGuardar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await VeterinarioService.RegistrarVeterinario(Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Veterinario registrado correctamente");
+				Navegador.NavigateTo(Rutas.ListaVeterinario);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}

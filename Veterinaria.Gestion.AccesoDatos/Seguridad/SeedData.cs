@@ -15,7 +15,7 @@ namespace Veterinaria.Gestion.AccesoDatos.Seguridad
             var userService = serviceProvider.GetRequiredService<UserManager<SeguridadEntity>>();
             var RoleService = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string[] roles = { "Administrador", "Cliente" , "Recepcionista"};
+            string[] roles = { "Administrador", "Cliente" , "Veterinario"};
 
             foreach (var role in roles)
             {

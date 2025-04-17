@@ -36,7 +36,7 @@
 			var resultado = await ClienteService.ListarDetalleByCliente(0);
 			if (resultado.Success)
 			{
-				ListaClientes = resultado.Data;
+				ListaClientes = resultado.Data!;
 			}
 		}
 		catch (Exception ex)

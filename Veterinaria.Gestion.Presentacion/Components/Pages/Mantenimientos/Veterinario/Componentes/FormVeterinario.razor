@@ -1,0 +1,90 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Veterinario
+@using Veterinaria.Gestion.Dto.Response.Especialidad
+
+<EditForm Model="Request" OnValidSubmit="OnGuardar">
+	<DataAnnotationsValidator />
+	<div class="row ">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Nombre: </label>
+			<input type="text" class="form-control" @bind="Request.Nombre" />
+			<ValidationMessage For="() => Request.Nombre" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Apellido: </label>
+			<input type="text" class="form-control" @bind="Request.Apellido" />
+			<ValidationMessage For="() => Request.Apellido" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Telefono: </label>
+			<input type="text" class="form-control" @bind="Request.Telefono" />
+			<ValidationMessage For="() => Request.Telefono" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Correo: </label>
+			<input type="text" class="form-control" @bind="Request.Email" />
+			<ValidationMessage For="() => Request.Email" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Licencia: </label>
+			<input type="text" class="form-control" @bind="Request.NumeroLicencia" />
+			<ValidationMessage For="() => Request.NumeroLicencia" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Especialidad: </label>
+			<select type="text" class="form-control" @bind="Request.IdEspecialidad">
+				<option value="0">-Seleccione Especialidad-</option>
+				@foreach (var item in ListaEspecialidad)
+				{
+					<option value="@item.Id">@item.Nombre</option>
+				}
+			</select>
+			<ValidationMessage For="() => Request.IdEspecialidad" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>D.N.I: </label>
+			<input type="text" class="form-control" @bind="Request.DocumentoIdentidad" />
+			<ValidationMessage For="() => Request.DocumentoIdentidad" />
+		</div>
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Usuario: </label>
+			<input type="text" class="form-control" @bind="Request.Usuario" />
+			<ValidationMessage For="() => Request.Usuario" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Clave: </label>
+			<input type="text" class="form-control" @bind="Request.Clave" />
+			<ValidationMessage For="() => Request.Clave" />
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<label>Confirmar Clave: </label>
+			<input type="text" class="form-control" @bind="Request.ConfirmarClave" />
+			<ValidationMessage For="() => Request.ConfirmarClave" />
+		</div>
+	</div>
+	<div class="row mt-4 gx-4">
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Guardar</button>
+			<a href="@Rutas.ListaVeterinario" class="btn btn-danger">Cancelar</a>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	[Parameter]
+	public EventCallback OnGuardarEvent { get; set; } = new();
+
+	[Parameter]
+	public VeterinarioRequest Request { get; set; } = new();
+
+	[Parameter]
+	public List<EspecialidadResponse> ListaEspecialidad { get; set; } = new();
+
+	public async Task OnGuardar()
+	{
+		await OnGuardarEvent.InvokeAsync();
+	}
+
+}

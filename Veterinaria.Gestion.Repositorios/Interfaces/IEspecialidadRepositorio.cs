@@ -9,5 +9,6 @@ namespace Veterinaria.Gestion.Repositorios.Interfaces
 {
     public interface IEspecialidadRepositorio : IRepositorioBase<Especialidad>
     {
+        Task<List<Especialidad>> ListarDetalleByEspecialidad(int id);
     }
 }

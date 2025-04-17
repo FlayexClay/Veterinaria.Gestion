@@ -20,6 +20,11 @@
         public const string EditarEspecialidadNav = "/Especialidad/editar/{id:int}";
         public const string EditarEspecialidad = "/Especialidad/editar";
 
+        public const string ListaVeterinario = "/Veterinarios";
+        public const string RegistroVeterinario = "/Veterinarios/registro";
+        public const string EditarVeterinarioNav = "/Veterinarios/editar/{id:int}";
+        public const string EditarVeterinario = "/Veterinarios/editar";
+
     }
 }
  

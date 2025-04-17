@@ -16,5 +16,6 @@ namespace Veterinaria.Gestion.Servicio.Interfaces
         Task<ResponseBase<EspecialidadResponse>> ObtenerPorId(int id);
         Task<ResponseBase> Eliminar(int id);
         Task<PaginacionResponse<ListaEspecialidadResponse>> Listar(BusquedaEspecialidadRequest request);
+        Task<ResponseBase<List<EspecialidadResponse>>> ListarDetalleByEspecialidad(int id);
     }
 }

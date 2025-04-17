@@ -64,12 +64,15 @@ builder.Services.AddScoped<IMascotaRepositorio, MascotaRepositorio>();
 builder.Services.AddScoped<IMascotaServicio, MascotaServicio>();
 builder.Services.AddScoped<IEspecialidadRepositorio, EspecialidadRepositorio>();
 builder.Services.AddScoped<IEspecialidadServicio, EspecialidadServicio>();
+builder.Services.AddScoped<IVeterinarioRepositorio, VeterinarioRepositorio>();
+builder.Services.AddScoped<IVeterinarioServicio, VeterinarioServicio>();
 
 builder.Services.AddAutoMapper(map =>
 {
     map.AddProfile<ClienteMap>();
     map.AddProfile<MascotaMap>();
     map.AddProfile<EspecialidadMap>();
+    map.AddProfile<VeterinarioMap>();
 });
 builder.Services.AddBlazoredToast();
 builder.Services.AddSweetAlert2();

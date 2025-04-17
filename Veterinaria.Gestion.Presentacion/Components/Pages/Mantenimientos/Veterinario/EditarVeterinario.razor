@@ -1,0 +1,108 @@
+﻿@using Veterinaria.Gestion.Dto.Request.Veterinario
+@using Veterinaria.Gestion.Dto.Response.Especialidad
+@using Veterinaria.Gestion.Presentacion.Components.Pages.Mantenimientos.Veterinario.Componentes
+@attribute [Route(Rutas.EditarVeterinarioNav)]
+@inject IVeterinarioServicio VeterinarioService;
+@inject IEspecialidadServicio EspecialidadService;
+@inject NavigationManager Navegador;
+@inject IToastService ToastService;
+@attribute [Authorize]
+<h3>Edicion de Veterinario</h3>
+<GroupBox Titulo="Datos del Veterinario">
+	<Contenido>
+		<FormVeterinario Request="Request" OnGuardarEvent="OnModificar" ListaEspecialidad="ListaEspecialidad" />
+	</Contenido>
+</GroupBox>
+
+<Loader IsLoading="IsLoading" />
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    public VeterinarioRequest Request { get; set; } = new();
+
+	public bool IsLoading { get; set; }
+
+	public List<EspecialidadResponse> ListaEspecialidad { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ObtenerPorId();
+		await OnListarEspecialidad();
+	}
+
+	public async Task OnListarEspecialidad()
+	{
+		try
+		{
+			var resultado = await EspecialidadService.ListarDetalleByEspecialidad(0);
+			if (resultado.Success)
+			{
+				ListaEspecialidad = resultado.Data;
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+
+		}
+	}
+
+	public async Task ObtenerPorId()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await VeterinarioService.ObtenerPorId(id);
+			if (resultado != null && resultado.Data != null)
+			{
+				var data = resultado.Data;
+				Request = new()
+					{
+						Nombre = data.Nombre,
+						Apellido = data.Apellido,
+						Email = data.Email,
+						Telefono = data.Telefono,
+						NumeroLicencia = data.NumeroLicencia,
+						DocumentoIdentidad = data.DocumentoIdentidad,
+						IdEspecialidad = data.IdEspecialidad,
+						
+					};
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+
+	public async Task OnModificar()
+	{
+		IsLoading = true;
+		try
+		{
+			var resultado = await VeterinarioService.Actualizar(id, Request);
+			if (resultado != null)
+			{
+				ToastService.ShowSuccess("Veterinario Editado correctamente");
+				Navegador.NavigateTo(Rutas.ListaVeterinario);
+			}
+		}
+		catch (Exception ex)
+		{
+
+			ToastService.ShowError(ex.Message);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
+	}
+}
